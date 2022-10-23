@@ -1,0 +1,145 @@
+*{
+    transition: 0.3s;
+}
+body{
+    overflow: hidden;
+}
+@font-face {
+    font-family: quicksands;
+    src: url(assets/quicksand-v30-latin-regular.woff2);
+}
+@font-face {
+    font-family: game;
+    src: url(assets/HeadlinerNo45-59y8.ttf);
+}
+@keyframes boxRight {
+    0%{left: 30%;}
+    100%{left: 55%;}
+}
+.boxRight{
+    animation-name: boxRight;
+    animation-duration: 2s;
+    left: 55%;
+}
+@keyframes boxLeft {
+    0%{left: 55%;}
+    100%{left: 30%;}
+}
+.boxLeft{
+    animation-name: boxLeft;
+    animation-duration: 2s;
+    left: 30%;
+}
+
+@keyframes regdown {
+    0%{left: 0;}
+    100%{left: -1000px;}
+}
+.timeToRegistDown{
+    animation-name: regdown;
+    animation-duration: 2s;
+    left: -1000px;
+}
+@keyframes regup {
+    0%{right: 2000px;}
+    100%{right: 0;}
+}
+.timeToRegistUp{
+    animation-name: regup;
+    animation-duration: 2s;
+    right: 0;
+    display: flex;
+}
+@keyframes logdown {
+    0%{left: 50%;}
+    100%{left: 1500px;}
+}
+.timeTologinDown{
+    animation-name: logdown;
+    animation-duration: 2s;
+    display: none;
+}
+@keyframes logup {
+    0%{left: 1500px;}
+    100%{ left: 50%;}
+}
+.timeToLoginUp{
+    animation-name: logup;
+    animation-duration: 2s;
+    left: 50%;
+}
+.material{
+    color: #828282;
+    z-index: 100000;
+    position: absolute;
+    top: 25%;
+    right: 3%;
+    cursor: pointer;
+}
+.sub{
+    color: #828282;
+    z-index: 100000;
+    left: 10px;
+    bottom: -70%;
+    position: absolute;
+    cursor: pointer;
+}
+.sub2{
+    color: #828282;
+    z-index: 100000;
+    left: 10px;
+    bottom: -30%;
+    position: absolute;
+    cursor: pointer;
+}
+#passE2, #userE2{
+    top: 60%;
+    right: 3%;
+}
+#subpassE, #subpass2E{
+    color: #828282;
+}
+#pass2E, #pass2{
+    right: 7%;
+}
+@keyframes fuu {
+    0%{margin-top: 0;}
+    100%{margin-top: -2000px; background-color: white;}
+}
+.dropUp{
+    animation-name: fuu;
+    animation-duration: 3s;
+    margin-top: -2000px;
+}
+@keyframes down {
+    0%{left: 0;}
+    100%{left: -2000px;}
+}
+.down{
+    animation-name: down;
+    animation-duration: 2s;
+    left: -2000px;
+}
+canvas{
+    background-color: #181818;
+    border-bottom: white solid 2px;
+}
+@keyframes opa {
+    0%{opacity: 1;}
+    100%{opacity: 0;}
+}
+.opa{
+    animation-name: opa;
+    animation-duration: 0,2s;
+    opacity: 0;
+    display: "none";
+}
+.none{
+    display: none;
+}
+#btn{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
