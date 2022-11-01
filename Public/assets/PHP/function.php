@@ -9,18 +9,32 @@ if(isset($_POST["action"])){
   else if($_POST["action"] == "login"){
     login();
   }
+  else if($_POST["action"] == "score"){
+    score();
+  }
+}
+// SCORE
+function score(){
+  global $conn;
+  $usergame = $_POST["user"];
+  $newscore = $_POST["newscore"];
+  $user =  mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM user WHERE username='$usergame'"));
+  $lastscore = $user['score'];
+  if($lastscore < $newscore){
+    $user = mysqli_query($conn, "UPDATE user SET score='$newscore' WHERE username = '$usergame'");
+    echo "new score";
+  }
 }
 
 // REGISTER
 function register(){
   global $conn;
-  $id = rand(10000, 99999);
-  $fullname = $_POST["fullReg"];
+  $id = rand(1000, 9999);
   $username = $_POST["userReg"];
   $password = $_POST["pass"];
   $date = date("Y-m-d");
 
-  if(empty($fullname) || empty($username) || empty($password)){
+  if(empty($username) || empty($password)){
     echo "Empty Form register";
     exit;
   }
@@ -31,7 +45,7 @@ function register(){
     exit;
   }
 
-  $query = "INSERT INTO user VALUES('$id', '$fullname', '$username', '$password', '$date', 'up')";
+  $query = "INSERT INTO user VALUES('$id', '$username', '$password', '$date', '0', 'up')";
   mysqli_query($conn, $query);
   echo "Registration Successful";
 }

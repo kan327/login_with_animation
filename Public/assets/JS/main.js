@@ -17,6 +17,8 @@ function trans(){
         sub.innerHTML="Dont Have any acount?"
         setTimeout(reg, 1000)
         function reg(){
+          // document.querySelector("#user").value = ""
+          // document.querySelector("#pass").value = ""
             register.style.display = "none"
             login.style.display = "flex"
         }
@@ -32,6 +34,8 @@ function trans(){
         sub.innerHTML="Already Have acount?"
         setTimeout(log, 1000)
         function log(){
+          // document.querySelector("#user").value = ""
+          // document.querySelector("#pass").value = ""
             login.style.display = "none"
             register.style.display = "flex"
         }
@@ -39,7 +43,6 @@ function trans(){
 }
 
 // regist and log
-document.querySelector("#M-errFull").style.display = "none"
 document.querySelector("#M-userE").style.display = "none"
 document.querySelector("#M-passE").style.display = "none"
 document.querySelector("#M-userE2").style.display = "none"
@@ -47,13 +50,11 @@ document.querySelector("#M-passE2").style.display = "none"
 
 function submitdata(type) {
     if(type == "register"){
-      var fullReg = document.querySelector("#full").value
       var userReg = document.querySelector("#user").value
       var pass = document.querySelector("#pass").value
       var userlog = document.querySelector("#userlog").value
       var passlog = document.querySelector("#passlog").value
       // --
-      var errfull = document.querySelector("#M-errFull")
       var erruser = document.querySelector("#M-userE")
       var errpass = document.querySelector("#M-passE")
       var erruser2 = document.querySelector("#M-userE2")
@@ -61,15 +62,8 @@ function submitdata(type) {
       var erruserE2 = document.querySelector("#subuserE2")
       var errpassE2 = document.querySelector("#subpassE2")
       var erruserE = document.querySelector("#subuserE")
-      var errfullE = document.querySelector("#subfullE")
       var errpassE = document.querySelector("#subpassE")
         if(type == "register"){
-          if(fullReg == "" || fullReg == undefined){
-            errfull.style.display = "block"
-            errfullE.innerHTML = "Cannot Empty"
-          }else{
-            errfull.style.display = "none"
-          }
           if(userReg == ""|| userReg == undefined){
             erruser.style.display = "block"
             erruserE.innerHTML = "Cannot Empty"
@@ -107,7 +101,6 @@ function submitdata(type) {
     }
     $(document).ready(function() {
       var data = {
-        fullReg: $("#full").val(),
         userReg: $("#user").val(),
         pass: $("#pass").val(),
         // ---
@@ -121,22 +114,30 @@ function submitdata(type) {
         type: 'post',
         data: data,
         success: function(response) {
-            // "hi"+data["fullReg"]
+            // "hi"+data["user"]
             
           if (response == "Login Successful") {
             console.log("hehei")
             Swal.fire({
               icon: 'success',
-              title: 'Login success',
-              text: 'hello '+data["userLog"]+" testtt",
+              title: 'Login Success',
               showConfirmButton: false,
               timer: 4000,
-              })
+            })
+            var userlog = document.querySelector("#userlog").value
+            var usergame = "STRING"
+              localStorage.setItem(usergame, userlog);
+              if (typeof (Storage) !== 'undefined') {
+                // pengecekkan apakah data localStorage dengan key NUMBER tersedia atau belum
+                if (localStorage.getItem(usergame) === 'undefined') {
+                  // Jika belum maka akan atur dengan nilai awal yakni 0
+                }
+            }   
             setTimeout(yosh, 5000)
             function yosh(){
               document.querySelector("body").classList.toggle("dropUp")
               item.innerHTML="WEL<BR>COME"
-              sub.innerHTML="hello "+data["userLog"]+" Welcomeback and, enjoy yourself"
+              sub.innerHTML=" "
             }
             setTimeout(daisekai, 7500)
             function daisekai(){
@@ -160,11 +161,17 @@ function submitdata(type) {
           }else if(response == "Registration Successful") {
             Swal.fire({
               icon: 'success',
-              title: 'Registration success',
-              text: 'hello '+data["userReg"]+" Please fill the login before you play the game",
+              title: 'Registration Success',
               showConfirmButton: false,
               timer: 4000,
               })
+              setTimeout(rere, 4000)
+              console.log("berhasil")
+              function rere(){
+                console.log("clearallboy")
+                document.querySelector("#user").value = ""
+                document.querySelector("#pass").value = ""
+              }
           }
         }
       });/* ini komentar */

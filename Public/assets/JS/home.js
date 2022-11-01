@@ -1,26 +1,37 @@
+var usergame = "STRING"
+console.log(localStorage.getItem(usergame))
+
 function hajimemasu(){
     document.getElementById("dashboard").classList.toggle("down")
+    document.getElementById("btn").style.display = "none"
     setTimeout(startGame, 2000)
   }
   function res(){
     myGameArea.stop()
     myGameArea.clear()
     startGame()
+    document.getElementById("btn").style.display = "none"
+    document.getElementById("response").style.display = "none"
     }
-document.getElementById("btn").style.display = "none"
 document.getElementById("canvas").style.display = "none"
+document.getElementById("btn").style.display = "none"
+document.getElementById("response").style.display = "none"
 // game Time! 
   var myGamePiece ;
   var myObstacles=[];
   var myScore;
-  
+  var mySound;
+  var myMusic;
+
 function startGame() {
+    myMusic = new sound("theme.mp3");
+    myMusic.play();
     var color = document.getElementById("color").value
     document.getElementById("hehe").style.color = color
     document.getElementById("dashboard").style.display = "none"
     document.getElementById("canvas").style.display = "block"
     document.getElementById("conso").classList.add("opa")
-    myGamePiece = new component(80, 80, color, 15, 470);
+    myGamePiece = new component(70, 70, color, 65, 475);
     myScore = new component("30px", "Consolas", "white", 1000, 40, "text");
     myGameArea.start();
     myObstacles=[];
@@ -58,14 +69,46 @@ var myGameArea = {
   stop : function() {
       clearInterval(this.interval);
       gameover()
+      scores(myGameArea.frameNo)
   }
   // --
 
 }
 // --
+
+// score to database
+function scores(sc){
+    $(document).ready(function() {
+        var data = {
+          user: localStorage.getItem(usergame),
+          newscore: sc,
+          action: "score",
+        };
+        $.ajax({
+          url: 'assets/PHP/function.php',
+          /* url: 'function.php', use this at same directory*/ 
+          type: 'post',
+          data: data,
+          success: function(response) {
+              console.log(response)
+              if(response == "new score"){
+                  document.getElementById("response").innerHTML = "New Score"
+                }else{
+                  document.getElementById("response").innerHTML = "Game Over"
+              }
+          }
+        })
+    })
+}
+// --
+
+// display gameover
 function gameover(){
+    document.getElementById("response").style.display = "flex"
     document.getElementById("btn").style.display = "flex"
 }
+// --
+
 // add component
 function component(width, height, color, x, y, type) {
   this.gamearea = myGameArea;
@@ -74,7 +117,10 @@ function component(width, height, color, x, y, type) {
   this.speedX = 0;
   this.speedY = 0;    
   this.x = x;
-  this.y = y;    
+  this.y = y;  
+  this.gravity = 0;
+  this.gravitySpeed = 0;
+  this.bounce = 0.6; 
   this.type = type;    
   // updating component
   this.update = function() {
@@ -92,9 +138,20 @@ function component(width, height, color, x, y, type) {
 
   // update movement
   this.newPos = function() {
-      this.x += this.speedX;
-      this.y += this.speedY;        
-  }    
+    this.gravitySpeed += this.gravity;
+    this.x += this.speedX;
+    this.y += this.speedY + this.gravitySpeed;
+    this.hitBottom();
+}
+// --
+// hit btm
+this.hitBottom = function() {
+    var rockbottom = myGameArea.canvas.height - this.height;
+    if (this.y > rockbottom) {
+        this.y = rockbottom;
+        this.gravitySpeed = -(this.gravitySpeed * this.bounce);
+    }
+}
   // --
 
   // crash with other obj
@@ -116,6 +173,25 @@ function component(width, height, color, x, y, type) {
   // --
 }
 // --
+
+// for sound
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    // this.sound.setAttribute("controls", "none"); use this when static music
+    this.sound.setAttribute("controls", "loop");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+}
+// --
+
 // running frame
 function updateGameArea() {
   myGamePiece.speedX = 0;
@@ -124,30 +200,28 @@ function updateGameArea() {
   var x, y;
   for (i = 0; i < myObstacles.length; i += 1) {
       if (myGamePiece.crashWith(myObstacles[i])) {
+          myMusic.stop();
           myGameArea.stop(); return;
       }
   }
   // --
       myGameArea.clear();
       // check what key was pressed
-      if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -2; }
-      if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = 2; }
-      if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -2; }
-      if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = 2; }
+      if (myGameArea.keys && myGameArea.keys[38]) {accelerate(-0.2)}else{accelerate(0.1)}
       // --
 
       // for looping obstacle 
       myGameArea.frameNo += 1;
-      if (myGameArea.frameNo == 1 || everyinterval(300)) {
+      if (myGameArea.frameNo == 1 || everyinterval(80)) {
           x = myGameArea.canvas.width;
           minHeight = 20;
           maxHeight = 200;
           height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
-          minGap = 180;
-          maxGap = 300;
+          minGap = 150;
+          maxGap = 200;
           gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
           console.log(gap)
-          myObstacles.push(new component(30, height, "white", x, 0));
+          myObstacles.push(new component(30, height, "grey", x, 0));
           myObstacles.push(new component(30, x - height - gap, "white", x, height + gap));
       }
       for (i = 0; i < myObstacles.length; i += 1) {
@@ -163,7 +237,13 @@ function updateGameArea() {
       // myObstacle.newPos(); use this when u want to staic
   }
 // --
+// control
+function accelerate(n) {
+    if (!myGameArea.interval) {myGameArea.interval = setInterval(updateGameArea, 20);}
 
+    myGamePiece.gravity = n;
+}
+// --
 // any?(dont know :3)
 function everyinterval(n) {
     if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
